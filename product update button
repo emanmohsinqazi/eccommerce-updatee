@@ -1,0 +1,15 @@
+Product product = this.productService.getProduct(id);
+		if (product != null) {
+			// Set details of the product
+			product.setName(name);
+			product.setPrice(price);
+			product.setWeight(weight);
+			product.setQuantity(quantity);
+			product.setDescription(description);
+			product.setImage(productImage);
+
+			Category category = this.categoryService.getCategory(categoryId);
+			product.setCategory(category);
+
+			this.productService.updateProduct(id, product);
+		}
