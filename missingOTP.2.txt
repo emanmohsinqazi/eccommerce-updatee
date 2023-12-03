@@ -1,0 +1,50 @@
+package com.jtspringproject.JtSpringProject.controllers;
+
+import com.jtspringproject.JtSpringProject.services.OtpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.servlet.http.HttpSession;
+
+@Controller
+public class OtpController {
+
+    @Autowired
+    private OtpService otpService;
+
+    @GetMapping("/validate")
+    public String showValidationScreen() {
+        return "validate";
+    }
+
+    @PostMapping("/validate")
+    public String validateOtp(String userInputOtp, HttpSession session, Model model) {
+        String generatedOtp = (String) session.getAttribute("otp");
+
+        if (generatedOtp != null && generatedOtp.equals(userInputOtp)) {
+            // Valid OTP, perform necessary actions
+            model.addAttribute("message", "OTP Validation Successful");
+        } else {
+            // Invalid OTP
+            model.addAttribute("error", "Invalid OTP");
+        }
+
+        return "validate";
+    }
+
+    @PostMapping("/sendOtp")
+    public String sendOtp(HttpSession session, Model model) {
+        String generatedOtp = otpService.generateOtp();
+
+        // You may want to send this OTP to the user via email or SMS
+        // In this example, we'll just store it in the session for simplicity
+        session.setAttribute("otp", generatedOtp);
+
+        model.addAttribute("message", "OTP Sent successfully");
+
+        return "validate";
+    }
+}

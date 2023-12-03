@@ -1,0 +1,12 @@
+package com.jtspringproject.JtSpringProject.services;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class OtpService {
+    public String generateOtp() {
+        // Generate a random 6-digit OTP
+        int otp = (int) (Math.random() * 900000) + 100000;
+        return String.valueOf(otp);
+    }
+}
