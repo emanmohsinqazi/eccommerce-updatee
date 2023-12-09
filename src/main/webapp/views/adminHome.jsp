@@ -14,29 +14,28 @@
 	integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ"
 	crossorigin="anonymous">
 <title>Document</title>
-
 </head>
 
-<body action="/adminHome" class="bg-dark">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-	<div class="container-fluid">
-		<a class="navbar-brand" href="#"> <img
+<body class="bg-dark">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#"> <img
 				src="../static/images/logo.png" width="auto" height="40"
 				class="d-inline-block align-top" alt="" />
-		</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarSupportedContent"
 				aria-controls="navbarSupportedContent" aria-expanded="false"
 				aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+				<span class="navbar-toggler-icon"></span>
+			</button>
 
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav mr-auto"></ul>
-			<ul class="navbar-nav">
-				<!-- Modified anchor tag with href="/adminHome" -->
-				<li class="nav-item active"><a class="nav-link" href="adminHome">Home Page</a></li>
-				<li class="nav-item active"><a class="nav-link" href="/admin/login">Logout</a></li>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto"></ul>
+				<ul class="navbar-nav">
+					<li class="nav-item active"><a class="nav-link" href="/admin/Dashboard">Home
+							Page</a></li>
+					<li class="nav-item active"><a class="nav-link" href="/admin/login">Logout</a></li>
 
 				</ul>
 

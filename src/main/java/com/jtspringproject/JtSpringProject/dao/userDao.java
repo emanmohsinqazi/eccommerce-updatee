@@ -40,38 +40,49 @@ public class userDao {
 //    public User checkLogin() {
 //    	this.sessionFactory.getCurrentSession().
 //    }
-    @Transactional
-    public User getUser(String username,String password) {
-    	Query query = sessionFactory.getCurrentSession().createQuery("from CUSTOMER where username = :username");
-    	query.setParameter("username",username);
-    	
-    	try {
-			User user = (User) query.getSingleResult();
-			System.out.println(user.getPassword());
-			if(password.equals(user.getPassword())) {
-				return user;
-			}else {		
-				return new User();
-			}
-		}catch(Exception e){
-			System.out.println(e.getMessage());
-			User user = new User();
-			return user;
-		}
-    	
-    }
-	@Transactional
-	public boolean deleteUser(int id) {
-		try (Session session = this.sessionFactory.getCurrentSession()) {
-			User userToDelete = session.get(User.class, id);
+@Transactional
+public User getUser(String username,String password) {
+	Query query = sessionFactory.getCurrentSession().createQuery("from CUSTOMER where username = :username");
+	query.setParameter("username", username);
 
-			if (userToDelete != null) {
-				session.delete(userToDelete);
-				return true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace(); // Log the exception or handle it as appropriate
+	User user;
+	try {
+		user = (User) query.getSingleResult();
+	} catch (NoResultException e) {
+		// User does not exist in the database
+		user = null;
+	}
+
+	String errorMessage;
+
+	if (user == null) {
+		// Invalid user, set error message
+		errorMessage = "Invalid username or password";
+		return user;
+	} else {
+		// Valid user, check password
+		if (password.equals(user.getPassword())) {
+			return user;
+		} else {
+			// Invalid password, set error message
+			errorMessage = "Invalid username or password";
+			return null;
 		}
-		return false;
+	}
+
+}
+	@Transactional
+	public boolean userExists(String username) {
+		Query query = sessionFactory.getCurrentSession().createQuery("from CUSTOMER where username = :username");
+		query.setParameter("username",username);
+		return !query.getResultList().isEmpty();
+	}
+	@Transactional
+	public void deleteUser(int userId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = session.load(User.class, userId);
+		if (user != null) {
+			session.delete(user);
+		}
 	}
 }

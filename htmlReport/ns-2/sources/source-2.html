@@ -1,0 +1,521 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > UserController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.jtspringproject.JtSpringProject.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: UserController (com.jtspringproject.JtSpringProject.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.7%
+  </span>
+  <span class="absValue">
+    (11/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.4%
+  </span>
+  <span class="absValue">
+    (87/196)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.jtspringproject.JtSpringProject.controller;
+&nbsp;
+&nbsp;import com.jtspringproject.JtSpringProject.models.Cart;
+&nbsp;import com.jtspringproject.JtSpringProject.models.Product;
+&nbsp;import com.jtspringproject.JtSpringProject.models.User;
+&nbsp;
+&nbsp;import java.io.Console;
+&nbsp;import java.sql.*;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import javax.servlet.http.Cookie;
+&nbsp;import javax.servlet.http.HttpServletRequest;
+&nbsp;import javax.servlet.http.HttpServletResponse;
+&nbsp;
+&nbsp;import com.jtspringproject.JtSpringProject.services.cartService;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.ui.Model;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.servlet.ModelAndView;
+&nbsp;
+&nbsp;import com.jtspringproject.JtSpringProject.services.userService;
+&nbsp;import com.jtspringproject.JtSpringProject.services.productService;
+&nbsp;import com.jtspringproject.JtSpringProject.services.cartService;
+&nbsp;
+&nbsp;@Controller
+<b class="fc">&nbsp;public class UserController{</b>
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	public userService userService;
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private productService productService;
+&nbsp;
+<b class="fc">&nbsp;	int userlogcheck = 0;</b>
+<b class="fc">&nbsp;	private List&lt;Integer&gt; cartProductIds = new ArrayList&lt;&gt;(); // Your list to store product IDs</b>
+&nbsp;
+<b class="fc">&nbsp;	String usernameforclass = &quot;&quot;;</b>
+<b class="fc">&nbsp;	String passforclass = &quot;&quot;;</b>
+&nbsp;	int useridforclass;
+&nbsp;	@GetMapping(&quot;/register&quot;)
+&nbsp;	public String registerUser()
+&nbsp;	{
+<b class="fc">&nbsp;		return &quot;register&quot;;</b>
+&nbsp;	}
+&nbsp;	@GetMapping(&quot;/updateProfile&quot;)
+&nbsp;	public String updateUser() {
+<b class="nc">&nbsp;		return &quot;updateProfile&quot;;</b>
+&nbsp;	}
+&nbsp;	@GetMapping(&quot;/index&quot;)
+&nbsp;	public ModelAndView index(Model model) {
+<b class="nc">&nbsp;		if (usernameforclass == null || usernameforclass.isEmpty()) {</b>
+<b class="nc">&nbsp;			ModelAndView mView  = new ModelAndView(&quot;userLogin&quot;);</b>
+<b class="nc">&nbsp;			return mView;</b>
+&nbsp;		} else {
+<b class="nc">&nbsp;			User u = this.userService.checkLogin(usernameforclass, passforclass);</b>
+<b class="nc">&nbsp;			model.addAttribute(&quot;username&quot;, usernameforclass);</b>
+<b class="nc">&nbsp;			ModelAndView mView  = new ModelAndView(&quot;index&quot;);</b>
+<b class="nc">&nbsp;			mView.addObject(&quot;user&quot;, u);</b>
+<b class="nc">&nbsp;			List&lt;Product&gt; products = this.productService.getProducts();</b>
+<b class="nc">&nbsp;			if (products.isEmpty()) {</b>
+<b class="nc">&nbsp;				mView.addObject(&quot;msg&quot;, &quot;No products are available&quot;);</b>
+&nbsp;			} else {
+<b class="nc">&nbsp;				mView.addObject(&quot;products&quot;, products);</b>
+&nbsp;			}
+&nbsp;
+<b class="nc">&nbsp;			return mView;</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;	@GetMapping(&quot;/buy&quot;)
+&nbsp;	public String buy()
+&nbsp;	{
+<b class="fc">&nbsp;		return &quot;buy&quot;;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@RequestMapping(value = {&quot;/&quot;,&quot;/logout&quot;})
+&nbsp;	public String returnIndex() throws SQLException {
+<b class="nc">&nbsp;		Connection con = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/ecommjava&quot;, &quot;root&quot;, &quot;LOL090LOL0&quot;);</b>
+<b class="nc">&nbsp;		String deleteProductCartQuery = &quot;DELETE FROM Product_cart&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;		try (PreparedStatement deleteStmt = con.prepareStatement(deleteProductCartQuery)) {</b>
+&nbsp;			// Execute the delete statement
+<b class="nc">&nbsp;			int rowsAffected = deleteStmt.executeUpdate();</b>
+<b class="nc">&nbsp;		}</b>
+<b class="nc">&nbsp;		userlogcheck =0;</b>
+<b class="nc">&nbsp;		usernameforclass = &quot;&quot;;</b>
+<b class="nc">&nbsp;		return &quot;userLogin&quot;;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;		@GetMapping(&quot;/&quot;)
+&nbsp;	public String userlogin(Model model) {
+&nbsp;
+<b class="fc">&nbsp;		return &quot;userLogin&quot;;</b>
+&nbsp;	}
+&nbsp;	@RequestMapping(value = &quot;userloginvalidate&quot;, method = RequestMethod.POST)
+&nbsp;	public ModelAndView userlogin( @RequestParam(&quot;username&quot;) String username, @RequestParam(&quot;password&quot;) String pass,Model model,HttpServletResponse res) {
+&nbsp;
+<b class="fc">&nbsp;		System.out.println(pass);</b>
+<b class="fc">&nbsp;		User u = this.userService.checkLogin(username, pass);</b>
+&nbsp;		//System.out.println(u.getUsername());
+<b class="fc">&nbsp;		if(u != null &amp;&amp; u.getUsername().equals(username)) {</b>
+&nbsp;
+<b class="fc">&nbsp;			res.addCookie(new Cookie(&quot;username&quot;, u.getUsername()));</b>
+<b class="fc">&nbsp;			ModelAndView mView  = new ModelAndView(&quot;index&quot;);</b>
+<b class="fc">&nbsp;			userlogcheck=1;</b>
+&nbsp;
+<b class="fc">&nbsp;			this.usernameforclass=username;</b>
+<b class="fc">&nbsp;			this.passforclass=pass;</b>
+<b class="fc">&nbsp;			mView.addObject(&quot;user&quot;, u);</b>
+<b class="fc">&nbsp;			List&lt;Product&gt; products = this.productService.getProducts();</b>
+&nbsp;
+<b class="fc">&nbsp;			if (products.isEmpty()) {</b>
+<b class="fc">&nbsp;				mView.addObject(&quot;msg&quot;, &quot;No products are available&quot;);</b>
+&nbsp;			} else {
+<b class="fc">&nbsp;				mView.addObject(&quot;products&quot;, products);</b>
+&nbsp;			}
+<b class="fc">&nbsp;			return mView;</b>
+&nbsp;
+&nbsp;		}else {
+<b class="fc">&nbsp;			ModelAndView mView = new ModelAndView(&quot;userLogin&quot;);</b>
+<b class="fc">&nbsp;			mView.addObject(&quot;msg&quot;, &quot;Please enter correct email and password&quot;);</b>
+<b class="fc">&nbsp;			return mView;</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	@GetMapping(&quot;/user/products&quot;)
+&nbsp;	public ModelAndView getproduct() {
+&nbsp;
+<b class="fc">&nbsp;		ModelAndView mView = new ModelAndView(&quot;uproduct&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;		List&lt;Product&gt; products = this.productService.getProducts();</b>
+&nbsp;
+<b class="fc">&nbsp;		if(products.isEmpty()) {</b>
+<b class="fc">&nbsp;			mView.addObject(&quot;msg&quot;,&quot;No products are available&quot;);</b>
+&nbsp;		}else {
+<b class="fc">&nbsp;			mView.addObject(&quot;products&quot;,products);</b>
+&nbsp;		}
+&nbsp;
+<b class="fc">&nbsp;		return mView;</b>
+&nbsp;	}
+&nbsp;	@RequestMapping(value = &quot;newuserregister&quot;, method = RequestMethod.POST)
+&nbsp;	public ModelAndView newUseRegister(@ModelAttribute User user) {
+&nbsp;
+<b class="fc">&nbsp;		boolean exists = this.userService.checkUserExists(user.getUsername());</b>
+&nbsp;
+<b class="fc">&nbsp;		if(!exists) {</b>
+<b class="fc">&nbsp;			System.out.println(user.getEmail());</b>
+<b class="fc">&nbsp;			user.setRole(&quot;ROLE_NORMAL&quot;);</b>
+<b class="fc">&nbsp;			this.userService.addUser(user);</b>
+&nbsp;
+<b class="fc">&nbsp;			System.out.println(&quot;New user created: &quot; + user.getUsername());</b>
+<b class="fc">&nbsp;			ModelAndView mView = new ModelAndView(&quot;userLogin&quot;);</b>
+<b class="fc">&nbsp;			return mView;</b>
+&nbsp;		} else {
+<b class="fc">&nbsp;			System.out.println(&quot;New user not created - username taken: &quot; + user.getUsername());</b>
+<b class="fc">&nbsp;			ModelAndView mView = new ModelAndView(&quot;register&quot;);</b>
+<b class="fc">&nbsp;			mView.addObject(&quot;msg&quot;, user.getUsername() + &quot; is taken. Please choose a different username.&quot;);</b>
+<b class="fc">&nbsp;			return mView;</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	@GetMapping(&quot;/profileDisplay&quot;)
+&nbsp;	public String profileDisplay(Model model) {
+&nbsp;		String displayusername,displaypassword,displayemail,displayaddress;
+&nbsp;		try
+&nbsp;		{
+<b class="nc">&nbsp;			Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</b>
+<b class="nc">&nbsp;			Connection con = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/ecommjava&quot;,&quot;root&quot;,&quot;zodiac&quot;);</b>
+<b class="nc">&nbsp;			PreparedStatement stmt = con.prepareStatement(&quot;select * from CUSTOMER where username = ?&quot;+&quot;;&quot;);</b>
+<b class="nc">&nbsp;			stmt.setString(1, usernameforclass);</b>
+<b class="nc">&nbsp;			ResultSet rst = stmt.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;			if(rst.next())</b>
+&nbsp;			{
+<b class="nc">&nbsp;				int userid = rst.getInt(1);</b>
+&nbsp;
+<b class="nc">&nbsp;				displayusername = rst.getString(6);</b>
+<b class="nc">&nbsp;				displayemail = rst.getString(3);</b>
+<b class="nc">&nbsp;				displaypassword = rst.getString(4);</b>
+<b class="nc">&nbsp;				displayaddress = rst.getString(2);</b>
+<b class="nc">&nbsp;				System.out.println(&quot;Hello user &quot;+displayusername+&quot; &quot;+displayemail+&quot; &quot;+displaypassword+&quot; &quot;+displayaddress);</b>
+<b class="nc">&nbsp;				model.addAttribute(&quot;userid&quot;,userid);</b>
+<b class="nc">&nbsp;				model.addAttribute(&quot;username&quot;,displayusername);</b>
+<b class="nc">&nbsp;				model.addAttribute(&quot;email&quot;,displayemail);</b>
+<b class="nc">&nbsp;				model.addAttribute(&quot;password&quot;,displaypassword);</b>
+<b class="nc">&nbsp;				model.addAttribute(&quot;address&quot;,displayaddress);</b>
+&nbsp;			}
+&nbsp;		}
+<b class="nc">&nbsp;		catch(Exception e)</b>
+&nbsp;		{
+<b class="nc">&nbsp;			System.out.println(&quot;Exception:&quot;+e);</b>
+<b class="nc">&nbsp;		}</b>
+<b class="nc">&nbsp;		System.out.println(&quot;Hello&quot;);</b>
+<b class="nc">&nbsp;		return &quot;profile&quot;;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@RequestMapping(value = &quot;updateuser&quot;,method=RequestMethod.POST)
+&nbsp;	public ModelAndView updateUserProfile(@RequestParam(&quot;userid&quot;) String userid,@RequestParam(&quot;username&quot;) String username, @RequestParam(&quot;email&quot;) String email, @RequestParam(&quot;password&quot;) String password, @RequestParam(&quot;address&quot;) String address) {
+&nbsp;		try {
+&nbsp;
+<b class="nc">&nbsp;			Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</b>
+<b class="nc">&nbsp;			Connection con = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/ecommjava&quot;,&quot;root&quot;,&quot;LOL090LOL0&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;			PreparedStatement pst = con.prepareStatement(&quot;update CUSTOMER set username= ?,email = ?,password= ?, address= ? where id = ?;&quot;);</b>
+<b class="nc">&nbsp;			System.out.println(username+&quot; &quot;+email+&quot; &quot;+password+&quot; &quot;+address+&quot; &quot;+userid);</b>
+<b class="nc">&nbsp;			pst.setString(1, username);</b>
+<b class="nc">&nbsp;			pst.setString(2, email);</b>
+<b class="nc">&nbsp;			pst.setString(3, password);</b>
+<b class="nc">&nbsp;			pst.setString(4, address);</b>
+<b class="nc">&nbsp;			pst.setInt(5, useridforclass);</b>
+&nbsp;			//System.out.println(&quot;After setting useridforclass: &quot; + useridforclass);
+<b class="nc">&nbsp;			int i = pst.executeUpdate();</b>
+<b class="nc">&nbsp;			usernameforclass = username;</b>
+&nbsp;
+&nbsp;		}
+<b class="nc">&nbsp;		catch(Exception e)</b>
+&nbsp;		{
+<b class="nc">&nbsp;			System.out.println(&quot;Exception:&quot;+e);</b>
+<b class="nc">&nbsp;		}</b>
+<b class="nc">&nbsp;		ModelAndView mv= new ModelAndView(&quot;index&quot;);</b>
+<b class="nc">&nbsp;		User u= this.userService.checkLogin(usernameforclass,passforclass);</b>
+&nbsp;
+<b class="nc">&nbsp;		mv.addObject(&quot;user&quot;, u);</b>
+&nbsp;
+<b class="nc">&nbsp;		List&lt;Product&gt; products = this.productService.getProducts();</b>
+<b class="nc">&nbsp;		if (products.isEmpty()) {</b>
+<b class="nc">&nbsp;			mv.addObject(&quot;msg&quot;, &quot;No products are available&quot;);</b>
+&nbsp;		} else {
+<b class="nc">&nbsp;			mv.addObject(&quot;products&quot;, products);</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return mv;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@RequestMapping(value = &quot;index&quot;, method = RequestMethod.POST)
+&nbsp;	public String addToCart(@RequestParam(&quot;product_id&quot;) String productId) {
+<b class="nc">&nbsp;		System.out.println(&quot;Product ID added to cart: &quot; + productId);</b>
+&nbsp;
+&nbsp;		try {
+<b class="nc">&nbsp;			Connection con = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/ecommjava&quot;, &quot;root&quot;, &quot;LOL090LOL0&quot;);</b>
+<b class="nc">&nbsp;			PreparedStatement stmt = con.prepareStatement(&quot;SELECT * FROM product WHERE product_id = ?&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;			stmt.setString(1, productId);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;			ResultSet rst = stmt.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;			if (rst.next()) {</b>
+<b class="nc">&nbsp;				int productIdFromDB = rst.getInt(&quot;product_id&quot;);</b>
+<b class="nc">&nbsp;				String productName = rst.getString(&quot;name&quot;);</b>
+<b class="nc">&nbsp;				String description = rst.getString(&quot;description&quot;);</b>
+<b class="nc">&nbsp;				double price = rst.getDouble(&quot;price&quot;);</b>
+<b class="nc">&nbsp;				String imageFromDB = rst.getString(&quot;image&quot;);</b>
+<b class="nc">&nbsp;				int quantityFromDB = rst.getInt(&quot;quantity&quot;);</b>
+<b class="nc">&nbsp;				int weightFromDB = rst.getInt(&quot;weight&quot;);</b>
+<b class="nc">&nbsp;				int categoryIdFromDB = rst.getInt(&quot;category_id&quot;);</b>
+<b class="nc">&nbsp;				int customerIdFromDB = rst.getInt(&quot;customer_id&quot;);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;				System.out.println(&quot;Product ID: &quot; + productIdFromDB);</b>
+<b class="nc">&nbsp;				System.out.println(&quot;Product Name: &quot; + productName);</b>
+<b class="nc">&nbsp;				System.out.println(&quot;Description: &quot; + description);</b>
+<b class="nc">&nbsp;				System.out.println(&quot;Price: &quot; + price);</b>
+&nbsp;
+&nbsp;				// Now you can use the retrieved data to insert into the &#39;product_cart&#39; table
+<b class="nc">&nbsp;				String insertQuery = &quot;INSERT INTO Product_cart (product_id, description, name, price, image, quantity, weight, category_id, customer_id) &quot; +</b>
+&nbsp;						&quot;VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)&quot;;
+&nbsp;
+<b class="nc">&nbsp;				try (PreparedStatement insertStmt = con.prepareStatement(insertQuery)) {</b>
+<b class="nc">&nbsp;					insertStmt.setInt(1, productIdFromDB);</b>
+<b class="nc">&nbsp;					insertStmt.setString(2, description);</b>
+<b class="nc">&nbsp;					insertStmt.setString(3, productName);</b>
+<b class="nc">&nbsp;					insertStmt.setDouble(4, price);</b>
+<b class="nc">&nbsp;					insertStmt.setString(5, imageFromDB);</b>
+<b class="nc">&nbsp;					insertStmt.setInt(6, quantityFromDB);</b>
+<b class="nc">&nbsp;					insertStmt.setInt(7, weightFromDB);</b>
+<b class="nc">&nbsp;					insertStmt.setInt(8, categoryIdFromDB);</b>
+<b class="nc">&nbsp;					insertStmt.setInt(9, customerIdFromDB);</b>
+&nbsp;
+&nbsp;					// Execute the insert statement
+<b class="nc">&nbsp;					int rowsAffected = insertStmt.executeUpdate();</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;				} catch (SQLException ex) {</b>
+<b class="nc">&nbsp;					throw new RuntimeException(ex);</b>
+<b class="nc">&nbsp;				}</b>
+&nbsp;			}
+&nbsp;			// Add your logic to store the product information, maybe in a session or database table
+&nbsp;
+<b class="nc">&nbsp;		} catch (SQLException e) {</b>
+<b class="nc">&nbsp;			throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;		}</b>
+<b class="nc">&nbsp;		return &quot;/cartproduct&quot;;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@PostMapping(&quot;/deleteCartItem&quot;)
+&nbsp;	public String deleteCartItem(@RequestParam(&quot;id&quot;) int cartItemId) {
+&nbsp;		try {
+<b class="fc">&nbsp;			Connection con = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/ecommjava&quot;,&quot;root&quot;,&quot;LOL090LOL0&quot;);</b>
+<b class="fc">&nbsp;			String deleteQuery = &quot;DELETE FROM product_cart WHERE product_id = ?&quot;;</b>
+<b class="fc">&nbsp;			PreparedStatement stmt = con.prepareStatement(deleteQuery);</b>
+<b class="fc">&nbsp;			stmt.setInt(1, cartItemId);</b>
+<b class="fc">&nbsp;			int rowsAffected = stmt.executeUpdate();</b>
+<b class="fc">&nbsp;			System.out.println(&quot;Item deleted from cart. Cart Item ID: &quot; + cartItemId);</b>
+&nbsp;
+&nbsp;			// Redirect back to the cartproduct page
+<b class="fc">&nbsp;			return &quot;redirect:/cartproduct&quot;;</b>
+<b class="nc">&nbsp;		} catch (Exception e) {</b>
+&nbsp;			// Handle exceptions (e.g., log the error)
+<b class="nc">&nbsp;			System.out.println(&quot;Error deleting item from cart: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;			return &quot;redirect:/cartproduct&quot;; // Redirect back to the cartproduct page in case of an error</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	@PostMapping(&quot;/addToCart&quot;)
+&nbsp;	public String addToCart(@RequestParam(&quot;product_id&quot;) int productId) {
+<b class="fc">&nbsp;		System.out.println(&quot;Product ID added to cart: &quot; + productId);</b>
+&nbsp;		try {
+<b class="fc">&nbsp;			Connection con = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/ecommjava&quot;, &quot;root&quot;, &quot;LOL090LOL0&quot;);</b>
+<b class="fc">&nbsp;			PreparedStatement stmt = con.prepareStatement(&quot;SELECT * FROM product WHERE product_id = ?&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;			stmt.setInt(1, productId);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;			ResultSet rst = stmt.executeQuery();</b>
+&nbsp;
+<b class="fc">&nbsp;			if (rst.next()) {</b>
+<b class="fc">&nbsp;				int productIdFromDB = rst.getInt(&quot;product_id&quot;);</b>
+<b class="fc">&nbsp;				String productName = rst.getString(&quot;name&quot;);</b>
+<b class="fc">&nbsp;				String description = rst.getString(&quot;description&quot;);</b>
+<b class="fc">&nbsp;				double price = rst.getDouble(&quot;price&quot;);</b>
+<b class="fc">&nbsp;				String imageFromDB = rst.getString(&quot;image&quot;);</b>
+<b class="fc">&nbsp;				int quantityFromDB = rst.getInt(&quot;quantity&quot;);</b>
+<b class="fc">&nbsp;				int weightFromDB = rst.getInt(&quot;weight&quot;);</b>
+<b class="fc">&nbsp;				int categoryIdFromDB = rst.getInt(&quot;category_id&quot;);</b>
+<b class="fc">&nbsp;				int customerIdFromDB = rst.getInt(&quot;customer_id&quot;);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;				System.out.println(&quot;Product ID: &quot; + productIdFromDB);</b>
+<b class="fc">&nbsp;				System.out.println(&quot;Product Name: &quot; + productName);</b>
+<b class="fc">&nbsp;				System.out.println(&quot;Description: &quot; + description);</b>
+<b class="fc">&nbsp;				System.out.println(&quot;Price: &quot; + price);</b>
+&nbsp;
+&nbsp;				// Now you can use the retrieved data to insert into the &#39;product_cart&#39; table
+<b class="fc">&nbsp;				String insertQuery = &quot;INSERT INTO Product_cart (product_id, description, name, price, image, quantity, weight, category_id, customer_id) &quot; +</b>
+&nbsp;						&quot;VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)&quot;;
+&nbsp;
+<b class="fc">&nbsp;				try (PreparedStatement insertStmt = con.prepareStatement(insertQuery)) {</b>
+<b class="fc">&nbsp;					insertStmt.setInt(1, productIdFromDB);</b>
+<b class="fc">&nbsp;					insertStmt.setString(2, description);</b>
+<b class="fc">&nbsp;					insertStmt.setString(3, productName);</b>
+<b class="fc">&nbsp;					insertStmt.setDouble(4, price);</b>
+<b class="fc">&nbsp;					insertStmt.setString(5, imageFromDB);</b>
+<b class="fc">&nbsp;					insertStmt.setInt(6, quantityFromDB);</b>
+<b class="fc">&nbsp;					insertStmt.setInt(7, weightFromDB);</b>
+<b class="fc">&nbsp;					insertStmt.setInt(8, categoryIdFromDB);</b>
+<b class="fc">&nbsp;					insertStmt.setInt(9, customerIdFromDB);</b>
+&nbsp;
+&nbsp;					// Execute the insert statement
+<b class="fc">&nbsp;					int rowsAffected = insertStmt.executeUpdate();</b>
+&nbsp;
+<b class="fc">&nbsp;				} catch (SQLException ex) {</b>
+<b class="nc">&nbsp;					throw new RuntimeException(ex);</b>
+<b class="fc">&nbsp;				}</b>
+&nbsp;			}
+&nbsp;
+<b class="nc">&nbsp;		} catch (SQLException e) {</b>
+<b class="nc">&nbsp;			throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;		}</b>
+<b class="fc">&nbsp;		return &quot;redirect:/index&quot;; // Redirect to the index page or any other page</b>
+&nbsp;
+&nbsp;	}
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;	@GetMapping(&quot;/cart&quot;)
+&nbsp;	public String viewCart(Model model) {
+&nbsp;		// Fetch products by IDs from the cartProductIds list
+&nbsp;
+&nbsp;
+&nbsp;		// Add the cartProducts to the model
+&nbsp;
+&nbsp;
+&nbsp;		// Return the cartproduct.jsp page
+<b class="fc">&nbsp;		return &quot;cartproduct&quot;;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;	@GetMapping(&quot;/cartproduct&quot;)
+&nbsp;	public String viewCartProduct() {
+<b class="fc">&nbsp;		return &quot;cartproduct&quot;;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;//	@GetMapping(&quot;/cart&quot;)
+&nbsp;//	public ModelAndView viewCart() {
+&nbsp;//		ModelAndView modelAndView = new ModelAndView(&quot;cartproduct&quot;);
+&nbsp;//
+&nbsp;//		// Fetch product details based on product IDs in cartProducts
+&nbsp;//		List&lt;Product&gt; cartProductsDetails = productService.getProductsByIds(cartProducts);
+&nbsp;//
+&nbsp;//		modelAndView.addObject(&quot;cartProducts&quot;, cartProductsDetails);
+&nbsp;//		return modelAndView;
+&nbsp;//	}
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;//	@GetMapping(&quot;carts&quot;)
+&nbsp;//	public ModelAndView  getCartDetail()
+&nbsp;//	{
+&nbsp;//		ModelAndView mv= new ModelAndView();
+&nbsp;//		List&lt;Cart&gt;carts = cartService.getCarts();
+&nbsp;//	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-03 20:33</div>
+</div>
+</body>
+</html>

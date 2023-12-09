@@ -26,26 +26,24 @@ public class categoryDao {
 		this.sessionFactory.getCurrentSession().saveOrUpdate(category);
 		return category;
 	}
-    @Transactional
+
+	@Transactional
 	public List<Category> getCategories() {
 		return this.sessionFactory.getCurrentSession().createQuery("from CATEGORY").list();
 	}
 
 	@Transactional
-	public boolean deleteCategory(int id) {
-		try (Session session = this.sessionFactory.getCurrentSession()) {
-			Category categoryToDelete = session.get(Category.class, id);
+	public Boolean deletCategory(int id) {
 
-			if (categoryToDelete != null) {
-				session.delete(categoryToDelete);
-				return true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace(); // Log the exception or handle it as appropriate
+		Session session = this.sessionFactory.getCurrentSession();
+		Object persistanceInstance = session.load(Category.class, id);
+
+		if (persistanceInstance != null) {
+			session.delete(persistanceInstance);
+			return true;
 		}
 		return false;
 	}
-
 
 	@Transactional
 	public Category updateCategory(int id, String name) {

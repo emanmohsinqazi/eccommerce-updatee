@@ -69,8 +69,6 @@ public class User {
 		this.role = role;
 	}
 
-
-
 	public String getAddress() {
 		return address;
 	}

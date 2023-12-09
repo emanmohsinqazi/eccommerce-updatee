@@ -1,5 +1,3 @@
-<!-- productupdate.jsp -->
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!doctype html>
@@ -18,7 +16,7 @@
 		  href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
 		  integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ"
 		  crossorigin="anonymous">
-	<title>Product Update</title>
+	<title>Document</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -33,37 +31,40 @@
 				aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
+
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto"></ul>
 			<ul class="navbar-nav">
 				<li class="nav-item active"><a class="nav-link"
-											   href="/dashboard" >Home Page</a></li>
+											   href="/admin/Dashboard" >Home Page</a></li>
 				<li class="nav-item active"><a class="nav-link"
 											   href="/logout" >Logout</a></li>
 			</ul>
+
 		</div>
 	</div>
 </nav><br>
-
-<c:forEach var="product" items="${products}">
+<c:forEach var="product" items="products">
 	<div class="jumbotron container border border-info">
 		<h3>Update Existing Product</h3>
 		<form action="/products/update/${product.id}" method="post">
 			<div class="row">
 				<div class="col-sm-5">
+
 					<div class="form-group">
-						<label for="name">Id</label>
-						<input type="number" readonly="readonly" class="form-control border border-success"
-							   name="id" value="${product.id}">
+						<label for="Id">Id</label>
+						<input type="number" readonly="readonly" class="form-control border border-success" id="Id" name="id"  value="${product.id}">
+
+
 					</div>
 					<div class="form-group">
 						<label for="name">Name</label>
-						<input type="text" class="form-control border border-success" required name="name"
-							   value="${product.name}" placeholder="Enter name">
+						<input type="text" class="form-control border border-success" required id="name" name="name" value="${product.name }" placeholder="Enter name">
 					</div>
+
 					<div class="form-group">
 						<label for="category">Select Category</label>
-						<select class="form-control border border-success" name="categoryid" readonly>
+						<select class="form-control border border-success" id="category" name="categoryid" readonly>
 							<option selected>Select a Category</option>
 							<c:forEach var="category" items="${categories}">
 								<option value="${category.id}">${category.name}</option>
@@ -72,35 +73,31 @@
 					</div>
 					<div class="form-group">
 						<label for="price">Price</label>
-						<input type="number" class="form-control border border-success" required name="price"
-							   value="${product.price}" min="1" placeholder="Price">
+						<input type="number" class="form-control border border-success" required id="price" name="price" value="${ product.price }" min="1" placeholder="Price">
 					</div>
 					<div class="form-group">
 						<label for="weight">Weight in grams</label>
-						<input type="number" class="form-control border border-success" required name="weight"
-							   value="${product.weight}" min="1" placeholder="Weight">
+						<input type="number" class="form-control border border-success" required id="weight" name="weight" value="${product.weight }" min="1" placeholder="Weight">
 					</div>
 					<div class="form-group">
-						<label for="weight">Available Quantity</label>
-						<input type="number" class="form-control border border-success" required name="quantity"
-							   value="${product.quantity}" min="1" placeholder="Quantity">
+						<label for="quantity">Available Quantity</label>
+						<input type="number" class="form-control border border-success" required id="quantity" name="quantity" value="${ product.quantity }" min="1" placeholder="Quantity">
 					</div>
+
+
 				</div>
 
 				<div class="col-sm-5">
 					<div class="form-group">
 						<label for="description">Product Description</label>
-						<textarea class="form-control border border-success" rows="4" name="description"
-								  placeholder="Product Details">${product.description}</textarea>
+						<textarea class="form-control border border-success" rows="4" id="description" name="product.description" placeholder="Product Details" value= "${ pdescription }"></textarea>
 					</div>
 					<p>Product Image</p>
 					<div class="custom-file">
-						<input type="file" class="custom-file-input" name="productImage"
-							   value="${product.image}" accept="image/jpeg, image/png" id="productImage"
-							   onchange="loadfile(event)"/>
+						<input type="file" class="custom-file-input" name="productImage" value="${ product.image }" accept="image/jpeg, image/png" id="productImage"  onchange="loadfile(event)"/>
 						<label class="custom-file-label border border-success" for="productImage">Choose file</label>
 						<script type="text/javascript">
-							var loadFile = function (event) {
+							var loadFile = function(event) {
 								var image = document.getElementById('imgPreview');
 								image.src = URL.createObjectURL(event.target.files[0]);
 							};

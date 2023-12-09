@@ -35,4 +35,8 @@ public class cartDao {
     public void deleteCart(Cart cart) {
         this.sessionFactory.getCurrentSession().delete(cart);
     }
+
+    public Cart getCart(int id) {
+        return null;
+    }
 }

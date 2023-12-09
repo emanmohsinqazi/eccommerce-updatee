@@ -1,4 +1,4 @@
-3<!doctype html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -38,11 +38,11 @@
             </div>
             <div class="form-group">
                 <label for="Address">Address</label>
-                <textarea class="form-control form-control-lg" rows="3" placeholder="Enter Your Address" name="address">${address }</textarea>
+                <textarea class="form-control form-control-lg" id="Address" rows="3" placeholder="Enter Your Address" name="address">${address }</textarea>
             </div>
 
             <input type="submit" value="Update Profile" class="btn btn-primary btn-block"><br>
-            
+
         </form>
     </div>
 </div>
